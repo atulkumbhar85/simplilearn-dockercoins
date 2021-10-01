@@ -39,7 +39,7 @@ SERVICE=redis
 NETWORK=${SERVICE}
 WORKDIR=/data/
 sudo docker volume create ${SERVICE}
-sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --restart always --volume ${SERVICE}:${WORKDIR}:rw --workdir ${WORKDIR} library/redis:alpine ${CMD}
+sudo docker container run --cpus 0.010 --detach --entrypoint ${ENTRYPOINT} --memory 10M --name ${SERVICE} --network ${NETWORK} --restart always --volume ${SERVICE}:${WORKDIR}:rw --workdir ${WORKDIR} library/redis:alpine ${CMD}
 
 CMD=hasher.rb
 ENTRYPOINT=ruby
