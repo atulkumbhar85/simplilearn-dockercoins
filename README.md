@@ -39,28 +39,46 @@ SERVICE=redis
 NETWORK=${SERVICE}
 WORKDIR=/data/
 sudo docker volume create ${SERVICE}
-sudo docker container run --cpus 0.010 --detach --entrypoint ${ENTRYPOINT} --memory 10M --name ${SERVICE} --network ${NETWORK} --restart always --volume ${SERVICE}:${WORKDIR}:rw --workdir ${WORKDIR} library/redis:alpine ${CMD}
+sudo docker container run --cpus 0.010 --detach --entrypoint ${ENTRYPOINT} --memory 10M --name ${SERVICE} --network ${NETWORK} --restart always --volume ${VOULME}:${WORKDIR}:rw --workdir ${WORKDIR} library/redis:alpine ${CMD}
+sudo docker container logs ${SERVICE}
+sudo docker container stats --no-stream ${SERVICE}
+sudo docker container top ${SERVICE}
 
 CMD=hasher.rb
 ENTRYPOINT=ruby
 SERVICE=hasher
 NETWORK=${SERVICE}
+VOULME=${PWD}/${SERVICE}
 WORKDIR=/${SERVICE}/
-sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --restart always --volume ${SERVICE}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --restart always --volume ${VOULME}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container logs ${SERVICE}
+sudo docker container stats --no-stream ${SERVICE}
+sudo docker container top ${SERVICE}
+
 
 CMD=rng.py
 ENTRYPOINT=python
 SERVICE=rng
 NETWORK=${SERVICE}
+VOULME=${PWD}/${SERVICE}
 WORKDIR=/${SERVICE}/
-sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --restart always --volume ${SERVICE}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --restart always --volume ${VOULME}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container logs ${SERVICE}
+sudo docker container stats --no-stream ${SERVICE}
+sudo docker container top ${SERVICE}
+
 
 CMD=worker.py
 ENTRYPOINT=python
 SERVICE=worker
 NETWORK=redis
+VOULME=${PWD}/${SERVICE}
 WORKDIR=/${SERVICE}/
-sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --restart always --volume ${SERVICE}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --restart always --volume ${VOULME}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container logs ${SERVICE}
+sudo docker container stats --no-stream ${SERVICE}
+sudo docker container top ${SERVICE}
+
 
 NETWORK=hasher
 sudo docker network connect ${NETWORK} ${SERVICE}
@@ -72,5 +90,9 @@ CMD=webui.js
 ENTRYPOINT=node
 SERVICE=webui
 NETWORK=redis
+VOULME=${PWD}/${SERVICE}
 WORKDIR=/${SERVICE}/
-sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --publish ${NODEPORT}:8080--restart always --volume ${SERVICE}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container run --detach --entrypoint ${ENTRYPOINT} --name ${SERVICE} --network ${NETWORK} --publish ${NODEPORT}:8080--restart always --volume ${VOULME}/:${WORKDIR}:ro --workdir ${WORKDIR} ${GITHUB_USERNAME}/${GITHUB_PROJECT}:${GITHUB_RELEASE}-${SERVICE} ${CMD}
+sudo docker container logs ${SERVICE}
+sudo docker container stats --no-stream ${SERVICE}
+sudo docker container top ${SERVICE}
